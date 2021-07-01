@@ -10,11 +10,6 @@ enum WarriorState {SLEEPING, WAITING, FIGHTING}
 
 enum Weapon {NONE, SWORD, SHIELD}
 
-interface IWarrior {
-    function deposit(uint256 amount, uint256 matchId) external;
-    function fight() external;
-    function claimReward() external;
-}
 struct Attribute {
     // num single match and tournament match the NFT has joined
     uint256 singleMatch;
@@ -36,7 +31,7 @@ contract NFTToken is ERC721EnumerableSimple, Ownable {
     string private baseURI;
 
     // Mapping token ID to its external attributes
-    mapping (uint256 => Attribute) public attriubtes;
+    mapping (uint256 => Attribute) public attributes;
 
     constructor() ERC721("Defi Warriror", "FIWA") {}
 
@@ -57,6 +52,11 @@ contract NFTToken is ERC721EnumerableSimple, Ownable {
         uint _totalSupply = totalSupply();
         _safeMint(owner, _totalSupply);
         attriubtes[_totalSupply].origin = _origin;
+    }
+
+    function originOf(uint256 tokenId) external view returns (address origin) {
+        Attribute att = attributes[tokenId];
+        return att.origin;
     }
 
     function _baseURI() internal view override returns (string memory) {

@@ -1,4 +1,6 @@
-pragma solidity =0.5.16;
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
 
 import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
 import './interfaces/IUniswapV2Pair.sol';
@@ -34,7 +36,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     uint public kLast; // reserve0 * reserve1, as of immediately after the most recent liquidity event
 
     //only user who staked their NFT to this pool are allowed to mine liquidity
-    mapping(uint256 => bool) public stakePermission;
+    mapping(address => bool) public isAllowedToFarm;
 
     uint private unlocked = 1;
     modifier lock() {
@@ -109,10 +111,22 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         nftFactory.mint(msg.sender, address(this));
     }
 
+    // stake warrior to the farm, this will enable user to mine liquidity 
     function stakeCharacter(uint256 characterId) external {
-        require(nftFactory.ownerOf[characterId] == msg.sender, "Invalid owner");
-        require(nftFactory.originOf[characterId] == address(this), "Invalid origin");
-        stakePermission[characterId] = true;
+        require(nftFactory.ownerOf(characterId) == msg.sender, "Invalid owner");
+        require(nftFactory.originOf(characterId) == address(this), "Invalid origin");
+        isAllowedToFarm[msg.sender] = true;
+    }
+
+    // unstake warrior from the farm, this will disable the ability to mine liquidity of user
+    function unstakeCharacter(uint256 characterId) external {
+        require(nftFactory.ownerOf(characterId) == msg.sender, "Invalid owner");
+        require(nftFactory.originOf(characterId) == address(this), "Invalid origin");
+        isAllowedToFarm[msg.sender] = false;
+    }
+
+    function allowedToFarm(address owner) external view returns (bool) {
+        return isAllowedToFarm[owner];
     }
 
     // called once by the factory at time of deployment
@@ -121,6 +135,8 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         token0 = _token0;
         token1 = _token1;
         nftFactory = _nftFactory;
+        // special case for pool creator
+        isAllowedToFarm[msg.sender] = true;
     }
 
     function init_oracles(address oracle0, address oracle1) external {
