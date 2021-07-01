@@ -1,5 +1,6 @@
 pragma solidity =0.5.16;
 
+import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
 import './interfaces/IUniswapV2Pair.sol';
 import './UniswapV2ERC20.sol';
 import './libraries/Math.sol';
@@ -13,11 +14,16 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     using UQ112x112 for uint224;
 
     uint public constant MINIMUM_LIQUIDITY = 10**3;
+    uint public constant MINIMUM_DEPOSIT = 30;
     bytes4 private constant SELECTOR = bytes4(keccak256(bytes('transfer(address,uint256)')));
 
     address public factory;
     address public token0;
     address public token1;
+    address public nftFactory;
+    address public FIWA;
+    AggregatorV3Interface public priceFeed0;
+    AggregatorV3Interface public priceFeed1;
 
     uint112 private reserve0;           // uses single storage slot, accessible via getReserves
     uint112 private reserve1;           // uses single storage slot, accessible via getReserves
@@ -26,6 +32,9 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     uint public price0CumulativeLast;
     uint public price1CumulativeLast;
     uint public kLast; // reserve0 * reserve1, as of immediately after the most recent liquidity event
+
+    //only user who staked their NFT to this pool are allowed to mine liquidity
+    mapping(uint256 => bool) public stakePermission;
 
     uint private unlocked = 1;
     modifier lock() {
@@ -62,11 +71,62 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         factory = msg.sender;
     }
 
+    // mint new NFT character
+    function mintCharacter(uint256 amount0In, uint256 amoun1In) internal {
+        require(priceFeed0 != address(0) && priceFeed1 != address(0), "Price Oracle not initialized");
+        require(amount0In > 0 && amoun1In > 0, 'UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT');
+
+        _safeTransfer(token0, factory, amount0In); // optimistically transfer tokens
+        _safeTransfer(token1, factory, amount1In); // optimistically transfer tokens
+
+        uint80 roundID;
+        int price0;
+        int price1;
+        uint startedAt;
+        uint timeStamp;
+
+        uint80 answeredInRound;
+        (
+            roundID, 
+            price0,
+            startedAt,
+            timeStamp,
+            answeredInRound
+        ) = priceFeed0.latestRoundData();
+
+        (
+            roundID, 
+            price1,
+            startedAt,
+            timeStamp,
+            answeredInRound
+        ) = priceFeed1.latestRoundData();
+
+        uint256 value = price0 / priceFeed0.decimals() * amount0In + price1 / priceFeed1.decimals() * amount1In;
+
+        require(value >= MINIMUM_DEPOSIT, "Deposit amount < minimum deposit");
+
+        nftFactory.mint(msg.sender, address(this));
+    }
+
+    function stakeCharacter(uint256 characterId) external {
+        require(nftFactory.ownerOf[characterId] == msg.sender, "Invalid owner");
+        require(nftFactory.originOf[characterId] == address(this), "Invalid origin");
+        stakePermission[characterId] = true;
+    }
+
     // called once by the factory at time of deployment
-    function initialize(address _token0, address _token1) external {
+    function initialize(address _token0, address _token1, address _nftFactory) external {
         require(msg.sender == factory, 'UniswapV2: FORBIDDEN'); // sufficient check
         token0 = _token0;
         token1 = _token1;
+        nftFactory = _nftFactory;
+    }
+
+    function init_oracles(address oracle0, address oracle1) external {
+        require(msg.sender == factory, 'UniswapV2: FORBIDDEN'); // sufficient check
+        priceFeed0 = AggregatorV3Interface(oracle0);
+        priceFeed1 = AggregatorV3Interface(oracle1);
     }
 
     // update reserves and, on the first call per block, price accumulators
