@@ -74,7 +74,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     }
 
     // mint new NFT character
-    function mintCharacter(uint256 amount0In, uint256 amoun1In) internal {
+    function mintCharacter(uint256 amount0In, uint256 amoun1In) external returns (uint256 characterId) {
         require(priceFeed0 != address(0) && priceFeed1 != address(0), "Price Oracle not initialized");
         require(amount0In > 0 && amoun1In > 0, 'UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT');
 
@@ -109,6 +109,8 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         require(value >= MINIMUM_DEPOSIT, "Deposit amount < minimum deposit");
 
         nftFactory.mint(msg.sender, address(this));
+
+        return nftFactory.totalSupply() - 1;
     }
 
     // stake warrior to the farm, this will enable user to mine liquidity 
