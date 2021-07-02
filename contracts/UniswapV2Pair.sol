@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity >=0.5.16;
 
-import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.5/interfaces/AggregatorV3Interface.sol";
 import './interfaces/IUniswapV2Pair.sol';
 import './UniswapV2ERC20.sol';
 import './libraries/Math.sol';
@@ -74,9 +74,9 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     }
 
     // mint new NFT character
-    function mintCharacter(uint256 amount0In, uint256 amoun1In) external returns (uint256 characterId) {
-        require(priceFeed0 != address(0) && priceFeed1 != address(0), "Price Oracle not initialized");
-        require(amount0In > 0 && amoun1In > 0, 'UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT');
+    function mintCharacter(uint256 amount0In, uint256 amount1In) external returns (uint256 characterId) {
+        require(address(priceFeed0) != address(0) && address(priceFeed1) != address(0), "Price Oracle not initialized");
+        require(amount0In > 0 && amount1In > 0, 'UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT');
 
         _safeTransfer(token0, factory, amount0In); // optimistically transfer tokens
         _safeTransfer(token1, factory, amount1In); // optimistically transfer tokens
