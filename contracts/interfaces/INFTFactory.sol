@@ -4,7 +4,7 @@ pragma solidity >= 0.5.16;
 
 
 interface INFTFactory {
-    function mint(address owner, address _origin) external;
+    function mint(address owner, address _origin) external returns (uint256);
 
     function burn(uint256 tokenId) external;
 

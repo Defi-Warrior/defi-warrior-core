@@ -49,5 +49,6 @@ interface IUniswapV2Pair {
     function skim(address to) external;
     function sync() external;
 
-    function initialize(address, address) external;
+    function initialize(address, address, address) external;
+    function init_oracles(address, address) external;
 }
