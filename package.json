@@ -1,11 +1,11 @@
 {
-  "name": "defi-warrior-core",
+  "name": "@defi-warrior/core",
   "description": "🎛 Core contracts for the Defi Warrior game",
   "version": "1.0.0",
   "homepage": "https://defiwarrior.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Defi-Warrior/defi-warrior-core"
+    "url": "git+https://github.com/Defi-Warrior/defi-warrior-core.git"
   },
   "keywords": [
     "defi-warrior",
@@ -44,5 +44,13 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@chainlink/contracts": "^0.2.0-rc1"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/Defi-Warrior/defi-warrior-core/issues"
+  },
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "author": ""
 }
