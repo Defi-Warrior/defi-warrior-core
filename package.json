@@ -1,5 +1,5 @@
 {
-  "name": "@defi-warrior-core",
+  "name": "defi-warrior-core",
   "description": "🎛 Core contracts for the Defi Warrior game",
   "version": "1.0.0",
   "homepage": "https://defiwarrior.io",
@@ -39,8 +39,7 @@
     "precompile": "yarn clean",
     "compile": "waffle .waffle.json",
     "pretest": "yarn compile",
-    "test": "mocha",
-    "prepublishOnly": "yarn test"
+    "test": "mocha"
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {

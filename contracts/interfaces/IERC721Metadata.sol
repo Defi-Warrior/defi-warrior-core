@@ -1,24 +1,13 @@
-pragma solidity >= 0.5.16;
+pragma solidity ^0.5.0;
 
-contract IERC721Metadata {
+import "./IERC721.sol";
 
-  /**
-   * @notice A descriptive name for a collection of NFTs in this contract
-   */
-  function name() external view returns (string memory);
-
-  /**
-   * @notice An abbreviated name for NFTs in this contract
-   */
-  function symbol() external view returns (string memory);
-
-  /**
-   * @notice A description of what this DAR is used for
-   */
-  function description() external view returns (string memory);
-
-  /**
-   * Stores arbitrary info about a token
-   */
-  function tokenMetadata(uint256 assetId) external view returns (string memory);
+/**
+ * @title ERC-721 Non-Fungible Token Standard, optional metadata extension
+ * @dev See https://eips.ethereum.org/EIPS/eip-721
+ */
+contract IERC721Metadata is IERC721 {
+    function name() external view returns (string memory);
+    function symbol() external view returns (string memory);
+    function tokenURI(uint256 tokenId) external view returns (string memory);
 }
