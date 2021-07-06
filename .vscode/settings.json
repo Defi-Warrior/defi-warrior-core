@@ -1,3 +1,4 @@
 {
-    "solidity.compileUsingLocalVersion": "/home/hanhvn/projects/defi-warrior/defi-warrior-core/soljson-v0.5.16+commit.9c3226ce.js"
+    "solidity.compileUsingLocalVersion": "/home/hanhvn/projects/defi-warrior/defi-warrior-core/soljson-v0.5.16+commit.9c3226ce.js",
+    "solidity.compileUsingRemoteVersion": "v0.5.16+commit.9c3226ce"
 }
