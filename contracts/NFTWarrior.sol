@@ -5,7 +5,7 @@ import './libraries/ERC721Enumerable.sol';
 import './libraries/ERC721Metadata.sol';
 import './libraries/Ownable.sol';
 
-contract NFTWarriror is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
+contract NFTWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
     enum WarriorState {SLEEPING, WAITING, FIGHTING}
 
     enum Weapon {NONE, SWORD, SHIELD}
@@ -21,7 +21,11 @@ contract NFTWarriror is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
 
     mapping(uint256 => Attribute) public attributes;
 
-    function mint(address tokenOwner, address _origin) external onlyOwner returns (uint256) {
+    constructor (string memory name, string memory symbol) public ERC721Metadata(name, symbol) {
+        // solhint-disable-previous-line no-empty-blocks
+    }
+
+    function mint(address tokenOwner, address _origin) onlyOwner external returns (uint256) {
         uint256 tokenId = totalSupply();
         _mint(tokenOwner, tokenId);
         attributes[tokenId].origin = _origin;

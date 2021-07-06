@@ -14,6 +14,7 @@ interface IUniswapV2Pair {
     function approve(address spender, uint value) external returns (bool);
     function transfer(address to, uint value) external returns (bool);
     function transferFrom(address from, address to, uint value) external returns (bool);
+    function approveFarm(address farmer) external;
     function allowedToFarm(address owner) external view returns (bool);
 
     function DOMAIN_SEPARATOR() external view returns (bytes32);
@@ -50,5 +51,4 @@ interface IUniswapV2Pair {
     function sync() external;
 
     function initialize(address, address, address) external;
-    function init_oracles(address, address) external;
 }
