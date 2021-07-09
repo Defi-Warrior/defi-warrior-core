@@ -15,7 +15,6 @@ contract UniswapV2Factory is IUniswapV2Factory {
 
     bytes4 private constant SELECTOR = bytes4(keccak256(bytes('transfer(address,uint256)')));
 
-
     mapping(address => address) public getPriceFeed;
 
     mapping(address => mapping(address => address)) public getPair;
@@ -73,7 +72,7 @@ contract UniswapV2Factory is IUniswapV2Factory {
         require(success && (data.length == 0 || abi.decode(data, (bool))), 'TransferHelper: TRANSFER_FROM_FAILED');
     }
 
-    function validate_amount(address token0, address token1, uint256 amount0In, uint256 amount1In) internal view returns (uint256) {
+    function evaluate_input_tokens(address token0, address token1, uint256 amount0In, uint256 amount1In) internal view returns (uint256) {
         AggregatorV3Interface priceFeed0 = AggregatorV3Interface(getPriceFeed[token0]);
         AggregatorV3Interface priceFeed1 = AggregatorV3Interface(getPriceFeed[token1]);
 
@@ -85,6 +84,7 @@ contract UniswapV2Factory is IUniswapV2Factory {
 
         uint256 left = (uint256(price0) * amount0In * 10000) / ((uint256(10)**priceFeed0.decimals()) * (uint256(10)**IUniswapV2Pair(token0).decimals()));
         uint256 right = (uint256(price1) * amount1In * 10000) / ((uint256(10)**priceFeed1.decimals()) * (uint256(10)**IUniswapV2Pair(token1).decimals()));
+        require(left*1000 / right >= 700 && right * 1000 / left >= 700, "Unbalance inputs");
         return left + right;
     }
 
@@ -94,7 +94,7 @@ contract UniswapV2Factory is IUniswapV2Factory {
 
         address pair = getPair[token0][token1];
         require(pair != address(0), "Invalid Pair");
-        require(validate_amount(token0, token1, amount0In, amount1In) >= MINIMUM_DEPOSIT, 'Deposit amount < minimum deposit');
+        require(evaluate_input_tokens(token0, token1, amount0In, amount1In) >= MINIMUM_DEPOSIT, 'Deposit amount < minimum deposit');
 
         safeTransferFrom(token0, msg.sender, admin, amount0In); // optimistically transfer tokens
         safeTransferFrom(token1, msg.sender, admin, amount1In); // optimistically transfer tokens
