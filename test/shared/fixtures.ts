@@ -53,8 +53,8 @@ export async function pairFixture(provider: Web3Provider, [wallet]: Wallet[]): P
   return { factory, token0, token1, pair }
 }
 
-export async function nftFixture(provider: Web3Provider, [wallet]: Wallet[]): Promise<NFTFixture> {
-  const nftWarrior = await deployContract(wallet, NFTWarriror, ["Bitcoin-Tether USD", "BTC-USDT"], overrides);
+export async function nftFixture(provider: Web3Provider, [wallet, other]: Wallet[]): Promise<NFTFixture> {
+  const nftWarrior = await deployContract(wallet, NFTWarriror, ["Defi Warrior", "FIWA"], overrides);
   const factory = await deployContract(wallet, UniswapV2Factory, [wallet.address, nftWarrior.address], overrides)
   await nftWarrior.transferOwnership(factory.address);
 
@@ -71,6 +71,13 @@ export async function nftFixture(provider: Web3Provider, [wallet]: Wallet[]): Pr
   const token0Address = (await pair.token0()).address
   const token0 = tokenA.address === token0Address ? tokenA : tokenB
   const token1 = tokenA.address === token0Address ? tokenB : tokenA
+
+  await token0.transfer(other.address, expandTo18Decimals(100))
+  await token1.transfer(other.address, expandTo18Decimals(100))
+
+  await token0.approve(factory.address, expandTo18Decimals(100))
+  await token1.approve(factory.address, expandTo18Decimals(100))
+
 
   return { factory, token0, token1, pair, nftWarrior, priceFeed0, priceFeed1 }
 }

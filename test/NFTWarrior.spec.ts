@@ -43,19 +43,18 @@ describe('UniswapV2Pair', () => {
     pair = fixture.pair
   })
 
-  it('mint character', async () => {
-    expect(await factory.feeTo()).to.eq(AddressZero)
-    expect(await factory.admin()).to.eq(wallet.address)
-    expect(await factory.allPairsLength()).to.eq(1)
+  it('mint character success', async () => {
+    // expect(await factory.feeTo()).to.eq(AddressZero)
+    // expect(await factory.admin()).to.eq(wallet.address)
+    // expect(await factory.allPairsLength()).to.eq(1)
 
-    await token0.transfer(other.address, expandTo18Decimals(100))
-    await token1.transfer(other.address, expandTo18Decimals(100))
+    await factory.mintCharacter(token0.address, token1.address, expandTo18Decimals(15), expandTo18Decimals(15));
+    await factory.mintCharacter(token0.address, token1.address, expandTo18Decimals(16), expandTo18Decimals(14));
+  })
 
-    await token0.approve(factory.address, expandTo18Decimals(100))
-    await token1.approve(factory.address, expandTo18Decimals(100))
-
-    await factory.mintCharacter(token0.address, token1.address, expandTo18Decimals(14), expandTo18Decimals(15));
-
+  it('mint character failed', async () => {
+    await expect(factory.mintCharacter(token0.address, token1.address, expandTo18Decimals(10), expandTo18Decimals(20)))
+    .to.be.reverted;
   })
 
 })
