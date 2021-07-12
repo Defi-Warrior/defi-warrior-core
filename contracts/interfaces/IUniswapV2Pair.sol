@@ -11,6 +11,9 @@ interface IUniswapV2Pair {
     function balanceOf(address owner) external view returns (uint);
     function allowance(address owner, address spender) external view returns (uint);
 
+    function estimateInputValues(uint256 amount0In, uint256 amount1In) external view returns (uint256);
+    function initPriceFeeds(address, address) external;
+
     function approve(address spender, uint value) external returns (bool);
     function transfer(address to, uint value) external returns (bool);
     function transferFrom(address from, address to, uint value) external returns (bool);
@@ -50,5 +53,5 @@ interface IUniswapV2Pair {
     function skim(address to) external;
     function sync() external;
 
-    function initialize(address, address, address) external;
+    function initialize(address, address) external;
 }

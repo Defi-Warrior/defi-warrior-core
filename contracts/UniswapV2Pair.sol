@@ -2,6 +2,8 @@
 
 pragma solidity >=0.5.16;
 
+import '@chainlink/contracts/src/v0.5/interfaces/AggregatorV3Interface.sol';
+
 import './interfaces/IUniswapV2Pair.sol';
 import './UniswapV2ERC20.sol';
 import './libraries/Math.sol';
@@ -16,6 +18,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     using UQ112x112 for uint224;
 
     uint256 public constant MINIMUM_LIQUIDITY = 10**3;
+
     bytes4 private constant SELECTOR = bytes4(keccak256(bytes('transfer(address,uint256)')));
 
     address public factory;
@@ -23,6 +26,9 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     address public token1;
     address public nftFactory;
     address public FIWA;
+
+    AggregatorV3Interface priceFeed0 = priceFeed0;
+    AggregatorV3Interface priceFeed1 = priceFeed1;
 
     uint112 private reserve0; // uses single storage slot, accessible via getReserves
     uint112 private reserve1; // uses single storage slot, accessible via getReserves
@@ -95,15 +101,30 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     // called once by the factory at time of deployment
     function initialize(
         address _token0,
-        address _token1,
-        address _nftFactory
+        address _token1
     ) external {
-        require(msg.sender == factory, 'UniswapV2: FORBIDDEN'); // sufficient check
+        require(msg.sender == factory, 'DefiWarrior Pair: FORBIDDEN'); // sufficient check
         token0 = _token0;
         token1 = _token1;
-        nftFactory = _nftFactory;
-        // special case for pool creator
-        isAllowedToFarm[msg.sender] = true;
+    }
+
+    function initPriceFeeds(address feed0, address feed1) external {
+        require(msg.sender == factory, 'DefiWarrior Pair: FORBIDDEN'); // sufficient check
+        priceFeed0 = AggregatorV3Interface(feed0);
+        priceFeed1 = AggregatorV3Interface(feed1);
+    }
+
+    function estimateInputValues(uint256 amount0In, uint256 amount1In) public view returns (uint256) {
+        int256 price0;
+        int256 price1;
+
+        (, price0, , ,) = priceFeed0.latestRoundData();
+        (, price1, , ,) = priceFeed1.latestRoundData();
+
+        uint256 left = (uint256(price0) * amount0In * 10000) / ((uint256(10)**priceFeed0.decimals()) * (uint256(10)**IUniswapV2Pair(token0).decimals()));
+        uint256 right = (uint256(price1) * amount1In * 10000) / ((uint256(10)**priceFeed1.decimals()) * (uint256(10)**IUniswapV2Pair(token1).decimals()));
+        require(left*1000 / right >= 700 && right * 1000 / left >= 700, "Unbalance inputs");
+        return left + right;
     }
 
     // update reserves and, on the first call per block, price accumulators
