@@ -64,7 +64,7 @@ export async function nftFixture(provider: Web3Provider, [wallet, other]: Wallet
   const tokenA = await deployContract(wallet, ERC20, [expandTo18Decimals(10000)], overrides)
   const tokenB = await deployContract(wallet, ERC20, [expandTo18Decimals(10000)], overrides)
 
-  await factory.createPair(tokenA.address, tokenB.address, priceFeed0.address, priceFeed1.address, overrides)
+  await factory.createPair(tokenA.address, tokenB.address, overrides)
   const pairAddress = await factory.getPair(tokenA.address, tokenB.address)
   const pair = new Contract(pairAddress, JSON.stringify(UniswapV2Pair.abi), provider).connect(wallet)
 
