@@ -19,13 +19,20 @@ contract NFTWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         WarriorState state;
     }
 
+    address public router;
+
     mapping(uint256 => Attribute) public attributes;
 
     constructor (string memory name, string memory symbol) public ERC721Metadata(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
     }
 
-    function mint(address tokenOwner, address _origin) onlyOwner external returns (uint256) {
+    function setFactory(address _router) external onlyOwner {
+        router = _router;
+    }
+
+    function mint(address tokenOwner, address _origin) external returns (uint256) {
+        require(msg.sender == router, "NFTWarrior: Forbidden");
         uint256 tokenId = totalSupply();
         _mint(tokenOwner, tokenId);
         attributes[tokenId].origin = _origin;
