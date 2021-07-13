@@ -24,8 +24,6 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     address public factory;
     address public token0;
     address public token1;
-    address public nftFactory;
-    address public FIWA;
 
     AggregatorV3Interface priceFeed0 = priceFeed0;
     AggregatorV3Interface priceFeed1 = priceFeed1;
@@ -114,7 +112,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         priceFeed1 = AggregatorV3Interface(feed1);
     }
 
-    function estimateInputValues(uint256 amount0In, uint256 amount1In) public view returns (uint256) {
+    function estimateInputValues(uint256 amount0In, uint256 amount1In) public view returns (uint256, uint256) {
         int256 price0;
         int256 price1;
 
@@ -123,8 +121,8 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
 
         uint256 left = (uint256(price0) * amount0In * 10000) / ((uint256(10)**priceFeed0.decimals()) * (uint256(10)**IUniswapV2Pair(token0).decimals()));
         uint256 right = (uint256(price1) * amount1In * 10000) / ((uint256(10)**priceFeed1.decimals()) * (uint256(10)**IUniswapV2Pair(token1).decimals()));
-        require(left*1000 / right >= 700 && right * 1000 / left >= 700, "Unbalance inputs");
-        return left + right;
+
+        return (left, right);
     }
 
     // update reserves and, on the first call per block, price accumulators
