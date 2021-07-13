@@ -27,7 +27,7 @@ contract NFTWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         // solhint-disable-previous-line no-empty-blocks
     }
 
-    function setFactory(address _router) external onlyOwner {
+    function setRouter(address _router) external onlyOwner {
         router = _router;
     }
 
