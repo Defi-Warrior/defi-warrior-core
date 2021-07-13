@@ -43,18 +43,30 @@ describe('UniswapV2Pair', () => {
     pair = fixture.pair
   })
 
-  it('mint character success', async () => {
+  it('Set Price Feeds', async () => {
     // expect(await factory.feeTo()).to.eq(AddressZero)
     // expect(await factory.admin()).to.eq(wallet.address)
     // expect(await factory.allPairsLength()).to.eq(1)
+    let left, right;
+    await factory.setPriceFeeds(token0.address, oracle0.address, token1.address, oracle1.address);
 
-    await factory.mintCharacter(token0.address, token1.address, expandTo18Decimals(15), expandTo18Decimals(15));
-    await factory.mintCharacter(token0.address, token1.address, expandTo18Decimals(16), expandTo18Decimals(14));
-  })
+    left = (await pair.estimateInputValues(expandTo18Decimals(15), expandTo18Decimals(15)))
+    expect(left[0].toNumber() + left[1].toNumber()).eq(300000);
 
-  it('mint character failed', async () => {
-    await expect(factory.mintCharacter(token0.address, token1.address, expandTo18Decimals(10), expandTo18Decimals(20)))
-    .to.be.reverted;
+    right = (await pair.estimateInputValues(expandTo18Decimals(0), expandTo18Decimals(15)))
+    expect(right[0].toNumber() + right[1].toNumber()).eq(150000);
+
+    await oracle1.setPrice("2000000000000000000");
+
+    right = (await pair.estimateInputValues(expandTo18Decimals(0), expandTo18Decimals(15)))
+    expect(right[0].toNumber() + right[1].toNumber()).eq(300000);
+
+    await oracle0.setPrice("100000000000000000");
+    await oracle1.setPrice("100000000000000000");
+
+    right = (await pair.estimateInputValues(expandTo18Decimals(10), expandTo18Decimals(15)))
+    expect(right[0].toNumber() + right[1].toNumber()).eq(25000);
+
   })
 
 })
