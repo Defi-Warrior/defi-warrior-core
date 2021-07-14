@@ -11,7 +11,6 @@ import './libraries/UQ112x112.sol';
 import './interfaces/IERC20.sol';
 import './interfaces/IUniswapV2Factory.sol';
 import './interfaces/IUniswapV2Callee.sol';
-import './interfaces/INFTFactory.sol';
 
 contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     using SafeMath for uint256;
@@ -84,16 +83,6 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
 
     constructor() public {
         factory = msg.sender;
-    }
-
-    // stake warrior to the farm, this will enable user to mine liquidity
-    function approveFarm(address farmer) external {
-        require(msg.sender == factory, "Forbidden access");
-        isAllowedToFarm[farmer] = true;
-    }
-
-    function allowedToFarm(address owner) external view returns (bool) {
-        return isAllowedToFarm[owner];
     }
 
     // called once by the factory at time of deployment
