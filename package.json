@@ -44,7 +44,9 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@chainlink/contracts": "^0.2.0-rc1",
-    "@defi-warrior/libs": "1.0.1"
+    "@defi-warrior/libs": "1.0.1",
+    "@truffle/hdwallet-provider": "^1.4.0",
+    "truffle": "^5.3.11"
   },
   "bugs": {
     "url": "https://github.com/Defi-Warrior/defi-warrior-core/issues"
