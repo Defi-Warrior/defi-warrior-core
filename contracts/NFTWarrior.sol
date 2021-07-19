@@ -22,8 +22,6 @@ contract NFTWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
     address public router;
 
     mapping(uint256 => Attribute) public attributes;
-    // mapping from lptoken -> user address -> allowed to farm or not
-    mapping(address => mapping(address => bool)) public allowedToFarm;
 
     constructor (string memory name, string memory symbol) public ERC721Metadata(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
@@ -38,8 +36,20 @@ contract NFTWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         uint256 tokenId = totalSupply();
         _mint(tokenOwner, tokenId);
         attributes[tokenId].origin = _origin;
-        allowedToFarm[_origin][tokenOwner] = true;
         return tokenId;
+    }
+
+    function tokensOfOwner(address _owner) external view returns (uint[] memory) {
+        uint tokenCount = balanceOf(_owner);
+        if (tokenCount == 0) {
+            return new uint[](0); // Return an empty array
+        } else {
+            uint[] memory result = new uint[](tokenCount);
+            for (uint index = 0; index < tokenCount; index++) {
+                result[index] = tokenOfOwnerByIndex(_owner, index);
+            }
+            return result;
+        }
     }
 
     function burn(uint256 tokenId) external {
