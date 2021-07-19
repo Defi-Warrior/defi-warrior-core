@@ -108,8 +108,8 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         (, price0, , ,) = priceFeed0.latestRoundData();
         (, price1, , ,) = priceFeed1.latestRoundData();
 
-        uint256 left = (uint256(price0) * amount0In * 10000) / ((uint256(10)**priceFeed0.decimals()) * (uint256(10)**IUniswapV2Pair(token0).decimals()));
-        uint256 right = (uint256(price1) * amount1In * 10000) / ((uint256(10)**priceFeed1.decimals()) * (uint256(10)**IUniswapV2Pair(token1).decimals()));
+        uint256 left = (uint256(price0).mul(amount0In).mul(10000)) / (uint256(10)**(priceFeed0.decimals() + IUniswapV2Pair(token0).decimals()));
+        uint256 right = (uint256(price1).mul(amount1In).mul(10000)) / (uint256(10)**(priceFeed1.decimals() + IUniswapV2Pair(token1).decimals()));
 
         return (left, right);
     }
