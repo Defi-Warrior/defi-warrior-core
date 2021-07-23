@@ -2,10 +2,10 @@
 
 pragma solidity >=0.5.16;
 
-import './interfaces/IUniswapV2Factory.sol';
-import './UniswapV2Pair.sol';
+import './interfaces/IDefiWarriorFactory.sol';
+import './DefiWarriorPair.sol';
 
-contract UniswapV2Factory is IUniswapV2Factory {
+contract DefiWarriorFactory is IDefiWarriorFactory {
     address public feeTo;
     address public admin;
 
@@ -35,12 +35,12 @@ contract UniswapV2Factory is IUniswapV2Factory {
         (address token0, address token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
         require(token0 != address(0), 'Defi Warrior: ZERO_ADDRESS');
         require(getPair[token0][token1] == address(0), 'Defi Warrior: PAIR_EXISTS'); // single check is sufficient
-        bytes memory bytecode = type(UniswapV2Pair).creationCode;
+        bytes memory bytecode = type(DefiWarriorPair).creationCode;
         bytes32 salt = keccak256(abi.encodePacked(token0, token1));
         assembly {
             pair := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
-        IUniswapV2Pair(pair).initialize(token0, token1);
+        IDefiWarriorPair(pair).initialize(token0, token1);
         getPair[token0][token1] = pair;
         getPair[token1][token0] = pair; // populate mapping in the reverse direction
         allPairs.push(pair);
@@ -49,7 +49,7 @@ contract UniswapV2Factory is IUniswapV2Factory {
 
     function setPriceFeeds(address token0, address oracle0, address token1, address oracle1) onlyAdmin public {
         address pair = getPair[token0][token1];
-        IUniswapV2Pair(pair).initPriceFeeds(oracle0, oracle1);
+        IDefiWarriorPair(pair).initPriceFeeds(oracle0, oracle1);
     }
 
     function setFeeTo(address _feeTo) external onlyAdmin {

@@ -4,15 +4,15 @@ pragma solidity >=0.5.16;
 
 import '@chainlink/contracts/src/v0.5/interfaces/AggregatorV3Interface.sol';
 
-import './interfaces/IUniswapV2Pair.sol';
-import './UniswapV2ERC20.sol';
+import './interfaces/IDefiWarriorPair.sol';
+import './DefiWarriorERC20.sol';
 import './libraries/Math.sol';
 import './libraries/UQ112x112.sol';
 import './interfaces/IERC20.sol';
-import './interfaces/IUniswapV2Factory.sol';
-import './interfaces/IUniswapV2Callee.sol';
+import './interfaces/IDefiWarriorFactory.sol';
+import './interfaces/IDefiWarriorCallee.sol';
 
-contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
+contract DefiWarriorPair is IDefiWarriorPair, DefiWarriorERC20 {
     using SafeMath for uint256;
     using UQ112x112 for uint224;
 
@@ -108,8 +108,8 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         (, price0, , ,) = priceFeed0.latestRoundData();
         (, price1, , ,) = priceFeed1.latestRoundData();
 
-        uint256 left = (uint256(price0).mul(amount0In).mul(10000)) / (uint256(10)**(priceFeed0.decimals() + IUniswapV2Pair(token0).decimals()));
-        uint256 right = (uint256(price1).mul(amount1In).mul(10000)) / (uint256(10)**(priceFeed1.decimals() + IUniswapV2Pair(token1).decimals()));
+        uint256 left = (uint256(price0).mul(amount0In).mul(10000)) / (uint256(10)**(priceFeed0.decimals() + IDefiWarriorPair(token0).decimals()));
+        uint256 right = (uint256(price1).mul(amount1In).mul(10000)) / (uint256(10)**(priceFeed1.decimals() + IDefiWarriorPair(token1).decimals()));
 
         return (left, right);
     }
@@ -137,7 +137,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
 
     // if fee is on, mint liquidity equivalent to 1/6th of the growth in sqrt(k)
     function _mintFee(uint112 _reserve0, uint112 _reserve1) private returns (bool feeOn) {
-        address feeTo = IUniswapV2Factory(factory).feeTo();
+        address feeTo = IDefiWarriorFactory(factory).feeTo();
         feeOn = feeTo != address(0);
         uint256 _kLast = kLast; // gas savings
         if (feeOn) {
@@ -225,7 +225,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
             require(to != _token0 && to != _token1, 'Defi Warrior: INVALID_TO');
             if (amount0Out > 0) _safeTransfer(_token0, to, amount0Out); // optimistically transfer tokens
             if (amount1Out > 0) _safeTransfer(_token1, to, amount1Out); // optimistically transfer tokens
-            if (data.length > 0) IUniswapV2Callee(to).uniswapV2Call(msg.sender, amount0Out, amount1Out, data);
+            if (data.length > 0) IDefiWarriorCallee(to).uniswapV2Call(msg.sender, amount0Out, amount1Out, data);
             balance0 = IERC20(_token0).balanceOf(address(this));
             balance1 = IERC20(_token1).balanceOf(address(this));
         }
