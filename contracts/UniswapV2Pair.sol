@@ -24,8 +24,8 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     address public token0;
     address public token1;
 
-    AggregatorV3Interface priceFeed0 = priceFeed0;
-    AggregatorV3Interface priceFeed1 = priceFeed1;
+    AggregatorV3Interface public priceFeed0;
+    AggregatorV3Interface public priceFeed1;
 
     uint112 private reserve0; // uses single storage slot, accessible via getReserves
     uint112 private reserve1; // uses single storage slot, accessible via getReserves
@@ -40,7 +40,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
 
     uint256 private unlocked = 1;
     modifier lock() {
-        require(unlocked == 1, 'UniswapV2: LOCKED');
+        require(unlocked == 1, 'Defi Warrior: LOCKED');
         unlocked = 0;
         _;
         unlocked = 1;
@@ -66,7 +66,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         uint256 value
     ) private {
         (bool success, bytes memory data) = token.call(abi.encodeWithSelector(SELECTOR, to, value));
-        require(success && (data.length == 0 || abi.decode(data, (bool))), 'UniswapV2: TRANSFER_FAILED');
+        require(success && (data.length == 0 || abi.decode(data, (bool))), 'Defi Warrior: TRANSFER_FAILED');
     }
 
     event Mint(address indexed sender, uint256 amount0, uint256 amount1);
@@ -90,13 +90,13 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         address _token0,
         address _token1
     ) external {
-        require(msg.sender == factory, 'DefiWarrior Pair: FORBIDDEN'); // sufficient check
+        require(msg.sender == factory, 'Defi Warrior Pair: FORBIDDEN'); // sufficient check
         token0 = _token0;
         token1 = _token1;
     }
 
     function initPriceFeeds(address feed0, address feed1) external {
-        require(msg.sender == factory, 'DefiWarrior Pair: FORBIDDEN'); // sufficient check
+        require(msg.sender == factory, 'Defi Warrior Pair: FORBIDDEN'); // sufficient check
         priceFeed0 = AggregatorV3Interface(feed0);
         priceFeed1 = AggregatorV3Interface(feed1);
     }
@@ -121,7 +121,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         uint112 _reserve0,
         uint112 _reserve1
     ) private {
-        require(balance0 <= uint112(-1) && balance1 <= uint112(-1), 'UniswapV2: OVERFLOW');
+        require(balance0 <= uint112(-1) && balance1 <= uint112(-1), 'Defi Warrior: OVERFLOW');
         uint32 blockTimestamp = uint32(block.timestamp % 2**32);
         uint32 timeElapsed = blockTimestamp - blockTimestampLast; // overflow is desired
         if (timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0) {
@@ -172,7 +172,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         } else {
             liquidity = Math.min(amount0.mul(_totalSupply) / _reserve0, amount1.mul(_totalSupply) / _reserve1);
         }
-        require(liquidity > 0, 'UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED');
+        require(liquidity > 0, 'Defi Warrior: INSUFFICIENT_LIQUIDITY_MINTED');
         _mint(to, liquidity);
 
         _update(balance0, balance1, _reserve0, _reserve1);
@@ -193,7 +193,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         uint256 _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee
         amount0 = liquidity.mul(balance0) / _totalSupply; // using balances ensures pro-rata distribution
         amount1 = liquidity.mul(balance1) / _totalSupply; // using balances ensures pro-rata distribution
-        require(amount0 > 0 && amount1 > 0, 'UniswapV2: INSUFFICIENT_LIQUIDITY_BURNED');
+        require(amount0 > 0 && amount1 > 0, 'Defi Warrior: INSUFFICIENT_LIQUIDITY_BURNED');
         _burn(address(this), liquidity);
         _safeTransfer(_token0, to, amount0);
         _safeTransfer(_token1, to, amount1);
@@ -212,9 +212,9 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         address to,
         bytes calldata data
     ) external lock {
-        require(amount0Out > 0 || amount1Out > 0, 'UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT');
+        require(amount0Out > 0 || amount1Out > 0, 'Defi Warrior: INSUFFICIENT_OUTPUT_AMOUNT');
         (uint112 _reserve0, uint112 _reserve1, ) = getReserves(); // gas savings
-        require(amount0Out < _reserve0 && amount1Out < _reserve1, 'UniswapV2: INSUFFICIENT_LIQUIDITY');
+        require(amount0Out < _reserve0 && amount1Out < _reserve1, 'Defi Warrior: INSUFFICIENT_LIQUIDITY');
 
         uint256 balance0;
         uint256 balance1;
@@ -222,7 +222,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
             // scope for _token{0,1}, avoids stack too deep errors
             address _token0 = token0;
             address _token1 = token1;
-            require(to != _token0 && to != _token1, 'UniswapV2: INVALID_TO');
+            require(to != _token0 && to != _token1, 'Defi Warrior: INVALID_TO');
             if (amount0Out > 0) _safeTransfer(_token0, to, amount0Out); // optimistically transfer tokens
             if (amount1Out > 0) _safeTransfer(_token1, to, amount1Out); // optimistically transfer tokens
             if (data.length > 0) IUniswapV2Callee(to).uniswapV2Call(msg.sender, amount0Out, amount1Out, data);
@@ -231,14 +231,14 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         }
         uint256 amount0In = balance0 > _reserve0 - amount0Out ? balance0 - (_reserve0 - amount0Out) : 0;
         uint256 amount1In = balance1 > _reserve1 - amount1Out ? balance1 - (_reserve1 - amount1Out) : 0;
-        require(amount0In > 0 || amount1In > 0, 'UniswapV2: INSUFFICIENT_INPUT_AMOUNT');
+        require(amount0In > 0 || amount1In > 0, 'Defi Warrior: INSUFFICIENT_INPUT_AMOUNT');
         {
             // scope for reserve{0,1}Adjusted, avoids stack too deep errors
             uint256 balance0Adjusted = balance0.mul(1000).sub(amount0In.mul(3));
             uint256 balance1Adjusted = balance1.mul(1000).sub(amount1In.mul(3));
             require(
                 balance0Adjusted.mul(balance1Adjusted) >= uint256(_reserve0).mul(_reserve1).mul(1000**2),
-                'UniswapV2: K'
+                'Defi Warrior: K'
             );
         }
 
