@@ -32,7 +32,7 @@ contract NFTWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
     }
 
     function mint(address tokenOwner, address _origin) external returns (uint256) {
-        require(msg.sender == router, "NFTWarrior: Forbidden");
+        require(msg.sender == router, "Defi Warrior: Forbidden");
         uint256 tokenId = totalSupply();
         _mint(tokenOwner, tokenId);
         attributes[tokenId].origin = _origin;
