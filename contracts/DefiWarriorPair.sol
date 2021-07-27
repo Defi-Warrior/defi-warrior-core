@@ -107,9 +107,10 @@ contract DefiWarriorPair is IDefiWarriorPair, DefiWarriorERC20 {
 
         (, price0, , ,) = priceFeed0.latestRoundData();
         (, price1, , ,) = priceFeed1.latestRoundData();
-
-        uint256 left = (uint256(price0).mul(amount0In).mul(10000)) / (uint256(10)**(priceFeed0.decimals() + IDefiWarriorPair(token0).decimals()));
-        uint256 right = (uint256(price1).mul(amount1In).mul(10000)) / (uint256(10)**(priceFeed1.decimals() + IDefiWarriorPair(token1).decimals()));
+        // multiply with 100 because solidity has no floating point decimal
+        // we afraid that after divide the floating portion will be lost so we must multiple the numerator with 100
+        uint256 left = (uint256(price0).mul(amount0In).mul(100)) / (uint256(10)**(priceFeed0.decimals() + IDefiWarriorPair(token0).decimals()));
+        uint256 right = (uint256(price1).mul(amount1In).mul(100)) / (uint256(10)**(priceFeed1.decimals() + IDefiWarriorPair(token1).decimals()));
 
         return (left, right);
     }
