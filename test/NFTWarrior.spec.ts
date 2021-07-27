@@ -51,21 +51,21 @@ describe('DefiWarriorPair', () => {
     await factory.setPriceFeeds(token0.address, oracle0.address, token1.address, oracle1.address);
 
     left = (await pair.estimateInputValues(expandTo18Decimals(15), expandTo18Decimals(15)))
-    expect(left[0].toNumber() + left[1].toNumber()).eq(300000);
+    expect(left[0].toNumber() + left[1].toNumber()).eq(3000);
 
     right = (await pair.estimateInputValues(expandTo18Decimals(0), expandTo18Decimals(15)))
-    expect(right[0].toNumber() + right[1].toNumber()).eq(150000);
+    expect(right[0].toNumber() + right[1].toNumber()).eq(1500);
 
     await oracle1.setPrice("2000000000000000000");
 
     right = (await pair.estimateInputValues(expandTo18Decimals(0), expandTo18Decimals(15)))
-    expect(right[0].toNumber() + right[1].toNumber()).eq(300000);
+    expect(right[0].toNumber() + right[1].toNumber()).eq(3000);
 
     await oracle0.setPrice("100000000000000000");
     await oracle1.setPrice("100000000000000000");
 
     right = (await pair.estimateInputValues(expandTo18Decimals(10), expandTo18Decimals(15)))
-    expect(right[0].toNumber() + right[1].toNumber()).eq(25000);
+    expect(right[0].toNumber() + right[1].toNumber()).eq(250);
 
   })
 
