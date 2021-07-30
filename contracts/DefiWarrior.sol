@@ -5,23 +5,11 @@ import './libraries/ERC721Enumerable.sol';
 import './libraries/ERC721Metadata.sol';
 import './libraries/Ownable.sol';
 
-contract NFTWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
-    enum WarriorState {SLEEPING, WAITING, FIGHTING}
-
-    enum Weapon {NONE, SWORD, SHIELD}
-
-    struct Attribute {
-        // num single match and tournament match the NFT has joined
-        uint256 singleMatch;
-        uint256 tournamentMatch;
-        // the address of token this NFT is represent for
-        address origin;
-        WarriorState state;
-    }
+contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
 
     address public router;
-
-    mapping(uint256 => Attribute) public attributes;
+    address public gemFactory;
+    uint32 rangeTribe = 10;
 
     constructor (string memory name, string memory symbol) public ERC721Metadata(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
@@ -31,12 +19,46 @@ contract NFTWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         router = _router;
     }
 
-    function mint(address tokenOwner, address _origin) external returns (uint256) {
+    function setGemFactoryr(address _gemFactory) external onlyOwner {
+        gemFactory = _gemFactory;
+    }
+
+    function setRangeTribe(uint32 _value) external onlyOwner {
+        rangeTribe = _value;
+    }
+
+    function mint(address tokenOwner, address origin) external returns (uint256) {
         require(msg.sender == router, "Defi Warrior: Forbidden");
+
         uint256 tokenId = totalSupply();
-        _mint(tokenOwner, tokenId);
-        attributes[tokenId].origin = _origin;
+
+        _safeMint(tokenOwner, tokenId);
+
+        numWarriorInClan[origin][tokenOwner] += 1;
+
+        uint32 random = uint32(block.timestamp % 2**32);
+
+        attributes.push(Attribute({
+            singleMatch: 0,
+            tournamentMatch: 0,
+            origin: origin,
+            tribe: random % rangeTribe,
+            critRate: random % 100,
+            skill: random % 51 + random % 99,
+            attack: random % 74 + random % 76
+        }));
+
         return tokenId;
+    }
+
+    function startFarming(address user, address lpToken) external {
+        require(msg.sender == gemFactory, "Sender must be GemFactory");
+        isFarming[user][lpToken] = true;
+    }
+
+    function stopFarming(address user, address lpToken) external {
+        require(msg.sender == gemFactory, "Sender must be GemFactory");
+        isFarming[user][lpToken] = false;
     }
 
     function tokensOfOwner(address _owner) external view returns (uint[] memory) {

@@ -17,9 +17,28 @@ contract ERC721 is Context, ERC165, IERC721 {
     using Address for address;
     using Counters for Counters.Counter;
 
+    struct Attribute {
+        // num single match and tournament match the NFT has joined
+        uint256 singleMatch;
+        uint256 tournamentMatch;
+        // the address of token this NFT is represent for
+        address origin;
+        uint32 tribe; // fire, water, dark...
+        uint32 critRate;
+        uint32 skill; // damage when warrior use skill
+        uint32 attack; // base damamge when warrior attack
+    }
     // Equals to `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`
     // which can be also obtained as `IERC721Receiver(0).onERC721Received.selector`
     bytes4 private constant _ERC721_RECEIVED = 0x150b7a02;
+
+    // mapping from lp token to user address => number of warrior origin from that lp token
+    mapping(address => mapping(address => uint256)) public numWarriorInClan;
+
+    // mapping to check which lptoken user is farming
+    mapping(address => mapping(address => bool)) isFarming;
+
+    Attribute[] public attributes;
 
     // Mapping from token ID to owner
     mapping (uint256 => address) private _tokenOwner;
@@ -302,6 +321,9 @@ contract ERC721 is Context, ERC165, IERC721 {
     function _transferFrom(address from, address to, uint256 tokenId) internal {
         require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
         require(to != address(0), "ERC721: transfer to the zero address");
+        address lpPair = attributes[tokenId].origin;
+        require(!isFarming[lpPair][from] || numWarriorInClan[lpPair][from] > 1, "You must withdraw all LP token from Farming first");
+
 
         _clearApproval(tokenId);
 
@@ -309,6 +331,9 @@ contract ERC721 is Context, ERC165, IERC721 {
         _ownedTokensCount[to].increment();
 
         _tokenOwner[tokenId] = to;
+
+        numWarriorInClan[lpPair][from] = numWarriorInClan[lpPair][from].sub(1);
+        numWarriorInClan[lpPair][to] += 1;
 
         emit Transfer(from, to, tokenId);
     }
