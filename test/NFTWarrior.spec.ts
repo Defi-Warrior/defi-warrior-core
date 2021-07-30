@@ -1,20 +1,11 @@
 import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
 import { solidity, MockProvider, createFixtureLoader } from 'ethereum-waffle'
-import { BigNumber, bigNumberify } from 'ethers/utils'
-import { deployContract } from 'ethereum-waffle'
-import { expandTo18Decimals, mineBlock, encodePrice } from './shared/utilities'
-import { AddressZero } from 'ethers/constants'
+import { expandTo18Decimals } from './shared/utilities'
 import { nftFixture } from './shared/fixtures'
 
 
-const MINIMUM_LIQUIDITY = bigNumberify(10).pow(3)
-
 chai.use(solidity)
-
-const overrides = {
-  gasLimit: 9999999
-}
 
 describe('DefiWarriorPair', () => {
   const provider = new MockProvider({

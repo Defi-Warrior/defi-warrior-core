@@ -7,7 +7,7 @@ import { expandTo18Decimals } from './utilities'
 import ERC20 from '../../build/ERC20.json'
 import DefiWarriorFactory from '../../build/DefiWarriorFactory.json'
 import DefiWarriorPair from '../../build/DefiWarriorPair.json'
-import NFTWarriror from '../../build/NFTWarrior.json'
+import DefiWarrior from '../../build/DefiWarrior.json'
 import PriceFeed from '../../build/PriceFeed.json'
 
 
@@ -54,7 +54,7 @@ export async function pairFixture(provider: Web3Provider, [wallet]: Wallet[]): P
 }
 
 export async function nftFixture(provider: Web3Provider, [wallet, other]: Wallet[]): Promise<NFTFixture> {
-  const nftWarrior = await deployContract(wallet, NFTWarriror, ["Defi Warrior", "FIWA"], overrides);
+  const nftWarrior = await deployContract(wallet, DefiWarrior, ["Defi Warrior", "FIWA"], overrides);
   const factory = await deployContract(wallet, DefiWarriorFactory, [wallet.address], overrides)
 
   const priceFeed0 = await deployContract(wallet, PriceFeed, ["BTC-USDT"], overrides)
