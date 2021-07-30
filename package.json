@@ -1,7 +1,7 @@
 {
   "name": "@defi-warrior/core",
   "description": "🎛 Core contracts for the Defi Warrior game",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "homepage": "https://defiwarrior.io",
   "repository": {
     "type": "git",
