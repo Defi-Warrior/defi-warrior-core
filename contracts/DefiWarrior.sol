@@ -19,7 +19,7 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         router = _router;
     }
 
-    function setGemFactoryr(address _gemFactory) external onlyOwner {
+    function setGemFactory(address _gemFactory) external onlyOwner {
         gemFactory = _gemFactory;
     }
 
