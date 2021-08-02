@@ -8,7 +8,6 @@ import ERC20 from '../../build/ERC20.json'
 import DefiWarriorFactory from '../../build/DefiWarriorFactory.json'
 import DefiWarriorPair from '../../build/DefiWarriorPair.json'
 import DefiWarrior from '../../build/DefiWarrior.json'
-import PriceFeed from '../../build/PriceFeed.json'
 
 
 interface FactoryFixture {
@@ -31,9 +30,7 @@ interface PairFixture extends FactoryFixture {
 }
 
 interface NFTFixture extends PairFixture {
-  nftWarrior: Contract,
-  priceFeed0: Contract,
-  priceFeed1: Contract
+  nftWarrior: Contract
 }
 
 export async function pairFixture(provider: Web3Provider, [wallet]: Wallet[]): Promise<PairFixture> {
@@ -57,9 +54,6 @@ export async function nftFixture(provider: Web3Provider, [wallet, other]: Wallet
   const nftWarrior = await deployContract(wallet, DefiWarrior, ["Defi Warrior", "FIWA"], overrides);
   const factory = await deployContract(wallet, DefiWarriorFactory, [wallet.address], overrides)
 
-  const priceFeed0 = await deployContract(wallet, PriceFeed, ["BTC-USDT"], overrides)
-  const priceFeed1 = await deployContract(wallet, PriceFeed, ["FIWA-USDT"], overrides)
-
   const tokenA = await deployContract(wallet, ERC20, [expandTo18Decimals(10000)], overrides)
   const tokenB = await deployContract(wallet, ERC20, [expandTo18Decimals(10000)], overrides)
 
@@ -74,5 +68,5 @@ export async function nftFixture(provider: Web3Provider, [wallet, other]: Wallet
   await token0.transfer(other.address, expandTo18Decimals(100))
   await token1.transfer(other.address, expandTo18Decimals(100))
 
-  return { factory, token0, token1, pair, nftWarrior, priceFeed0, priceFeed1 }
+  return { factory, token0, token1, pair, nftWarrior }
 }

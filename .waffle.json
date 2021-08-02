@@ -8,8 +8,6 @@
           "evm.bytecode.object",
           "evm.deployedBytecode.object",
           "abi",
-          "evm.bytecode.sourceMap",
-          "evm.deployedBytecode.sourceMap",
           "metadata"
         ],
         "": ["ast"]

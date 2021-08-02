@@ -20,8 +20,6 @@ describe('DefiWarriorPair', () => {
   let factory: Contract
   let token0: Contract
   let token1: Contract
-  let oracle0: Contract
-  let oracle1: Contract
   let pair: Contract
 
   beforeEach(async () => {
@@ -29,8 +27,6 @@ describe('DefiWarriorPair', () => {
     factory = fixture.factory
     token0 = fixture.token0
     token1 = fixture.token1
-    oracle0 = fixture.priceFeed0
-    oracle1 = fixture.priceFeed1
     pair = fixture.pair
   })
 
@@ -38,25 +34,25 @@ describe('DefiWarriorPair', () => {
     // expect(await factory.feeTo()).to.eq(AddressZero)
     // expect(await factory.admin()).to.eq(wallet.address)
     // expect(await factory.allPairsLength()).to.eq(1)
-    let left, right;
-    await factory.setPriceFeeds(token0.address, oracle0.address, token1.address, oracle1.address);
+    // let left, right;
+    // await factory.setPriceFeeds(token0.address, oracle0.address, token1.address, oracle1.address);
 
-    left = (await pair.estimateInputValues(expandTo18Decimals(15), expandTo18Decimals(15)))
-    expect(left[0].toNumber() + left[1].toNumber()).eq(3000);
+    // left = (await pair.estimateInputValues(expandTo18Decimals(15), expandTo18Decimals(15)))
+    // expect(left[0].toNumber() + left[1].toNumber()).eq(3000);
 
-    right = (await pair.estimateInputValues(expandTo18Decimals(0), expandTo18Decimals(15)))
-    expect(right[0].toNumber() + right[1].toNumber()).eq(1500);
+    // right = (await pair.estimateInputValues(expandTo18Decimals(0), expandTo18Decimals(15)))
+    // expect(right[0].toNumber() + right[1].toNumber()).eq(1500);
 
-    await oracle1.setPrice("2000000000000000000");
+    // await oracle1.setPrice("2000000000000000000");
 
-    right = (await pair.estimateInputValues(expandTo18Decimals(0), expandTo18Decimals(15)))
-    expect(right[0].toNumber() + right[1].toNumber()).eq(3000);
+    // right = (await pair.estimateInputValues(expandTo18Decimals(0), expandTo18Decimals(15)))
+    // expect(right[0].toNumber() + right[1].toNumber()).eq(3000);
 
-    await oracle0.setPrice("100000000000000000");
-    await oracle1.setPrice("100000000000000000");
+    // await oracle0.setPrice("100000000000000000");
+    // await oracle1.setPrice("100000000000000000");
 
-    right = (await pair.estimateInputValues(expandTo18Decimals(10), expandTo18Decimals(15)))
-    expect(right[0].toNumber() + right[1].toNumber()).eq(250);
+    // right = (await pair.estimateInputValues(expandTo18Decimals(10), expandTo18Decimals(15)))
+    // expect(right[0].toNumber() + right[1].toNumber()).eq(250);
 
   })
 
