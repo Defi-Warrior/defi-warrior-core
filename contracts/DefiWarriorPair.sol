@@ -2,8 +2,6 @@
 
 pragma solidity >=0.5.16;
 
-import '@chainlink/contracts/src/v0.5/interfaces/AggregatorV3Interface.sol';
-
 import './interfaces/IDefiWarriorPair.sol';
 import './DefiWarriorERC20.sol';
 import './libraries/Math.sol';
@@ -24,9 +22,6 @@ contract DefiWarriorPair is IDefiWarriorPair, DefiWarriorERC20 {
     address public token0;
     address public token1;
 
-    AggregatorV3Interface public priceFeed0;
-    AggregatorV3Interface public priceFeed1;
-
     uint112 private reserve0; // uses single storage slot, accessible via getReserves
     uint112 private reserve1; // uses single storage slot, accessible via getReserves
     uint32 private blockTimestampLast; // uses single storage slot, accessible via getReserves
@@ -34,9 +29,6 @@ contract DefiWarriorPair is IDefiWarriorPair, DefiWarriorERC20 {
     uint256 public price0CumulativeLast;
     uint256 public price1CumulativeLast;
     uint256 public kLast; // reserve0 * reserve1, as of immediately after the most recent liquidity event
-
-    //only user who staked their NFT to this pool are allowed to mine liquidity
-    mapping(address => bool) public isAllowedToFarm;
 
     uint256 private unlocked = 1;
     modifier lock() {
@@ -93,26 +85,6 @@ contract DefiWarriorPair is IDefiWarriorPair, DefiWarriorERC20 {
         require(msg.sender == factory, 'Defi Warrior Pair: FORBIDDEN'); // sufficient check
         token0 = _token0;
         token1 = _token1;
-    }
-
-    function initPriceFeeds(address feed0, address feed1) external {
-        require(msg.sender == factory, 'Defi Warrior Pair: FORBIDDEN'); // sufficient check
-        priceFeed0 = AggregatorV3Interface(feed0);
-        priceFeed1 = AggregatorV3Interface(feed1);
-    }
-
-    function estimateInputValues(uint256 amount0In, uint256 amount1In) public view returns (uint256, uint256) {
-        int256 price0;
-        int256 price1;
-
-        (, price0, , ,) = priceFeed0.latestRoundData();
-        (, price1, , ,) = priceFeed1.latestRoundData();
-        // multiply with 100 because solidity has no floating point decimal
-        // we afraid that after divide the floating portion will be lost so we must multiple the numerator with 100
-        uint256 left = (uint256(price0).mul(amount0In).mul(100)) / (uint256(10)**(priceFeed0.decimals() + IDefiWarriorPair(token0).decimals()));
-        uint256 right = (uint256(price1).mul(amount1In).mul(100)) / (uint256(10)**(priceFeed1.decimals() + IDefiWarriorPair(token1).decimals()));
-
-        return (left, right);
     }
 
     // update reserves and, on the first call per block, price accumulators

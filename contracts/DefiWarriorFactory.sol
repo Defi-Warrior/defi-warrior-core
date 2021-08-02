@@ -47,11 +47,6 @@ contract DefiWarriorFactory is IDefiWarriorFactory {
         emit PairCreated(token0, token1, pair, allPairs.length);
     }
 
-    function setPriceFeeds(address token0, address oracle0, address token1, address oracle1) onlyAdmin public {
-        address pair = getPair[token0][token1];
-        IDefiWarriorPair(pair).initPriceFeeds(oracle0, oracle1);
-    }
-
     function setFeeTo(address _feeTo) external onlyAdmin {
         feeTo = _feeTo;
     }
