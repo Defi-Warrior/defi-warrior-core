@@ -1,4 +1,6 @@
 pragma solidity >=0.5.16;
+pragma experimental ABIEncoderV2;
+
 
 import './libraries/ERC721.sol';
 import './libraries/ERC721Enumerable.sol';
@@ -91,5 +93,13 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
     function burn(uint256 tokenId) external {
       require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721Burnable: caller is not owner nor approved");
         _burn(tokenId);
+    }
+
+    function getWarriors(uint256[] calldata ids) external view returns(Attribute[] memory) {
+        Attribute[] memory atts = new Attribute[](ids.length);
+        for(uint i = 0; i < ids.length; i++) {
+            atts[i] = attributes[ids[i]];
+        }
+        return atts;
     }
 }
