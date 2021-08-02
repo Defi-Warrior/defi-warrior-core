@@ -18,25 +18,24 @@ contract ERC721 is Context, ERC165, IERC721 {
     using Counters for Counters.Counter;
 
     struct Attribute {
-        // num single match and tournament match the NFT has joined
-        uint256 singleMatch;
-        uint256 tournamentMatch;
-        // the address of token this NFT is represent for
-        address origin;
-        uint32 tribe; // fire, water, dark...
-        uint32 critRate;
-        uint32 skill; // damage when warrior use skill
-        uint32 attack; // base damamge when warrior attack
+        uint256 plannet; // btc, eth, solana, polkadot...
+        uint256 tribe; // fire, water, dark...
+        uint256 health;
+        uint256 critRate;
+        uint256 skill; // damage when warrior use skill
+        uint256 attack; // base damamge when warrior attack
+        uint256 bodyParts; // each 16 bits from left to right in this number represent a body part of the warrior
+        // the last 32 bits are reserved for evolution or some other stuff that we dont even fucking know yet
     }
     // Equals to `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`
     // which can be also obtained as `IERC721Receiver(0).onERC721Received.selector`
     bytes4 private constant _ERC721_RECEIVED = 0x150b7a02;
 
-    // mapping from lp token to user address => number of warrior origin from that lp token
-    mapping(address => mapping(address => uint256)) public numWarriorInClan;
+    // mapping from user address => number of warrior origin from that lp token
+    mapping(address => mapping(uint256 => uint256)) public numWarriorInClan;
 
-    // mapping to check which lptoken user is farming
-    mapping(address => mapping(address => bool)) isFarming;
+    // mapping to check which plannet user is farming
+    mapping(address => mapping(uint256 => bool)) isFarming;
 
     Attribute[] public attributes;
 
@@ -321,8 +320,8 @@ contract ERC721 is Context, ERC165, IERC721 {
     function _transferFrom(address from, address to, uint256 tokenId) internal {
         require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
         require(to != address(0), "ERC721: transfer to the zero address");
-        address lpPair = attributes[tokenId].origin;
-        require(!isFarming[lpPair][from] || numWarriorInClan[lpPair][from] > 1, "You must withdraw all LP token from Farming first");
+        uint256 plannet = attributes[tokenId].plannet;
+        require(!isFarming[from][plannet] || numWarriorInClan[from][plannet] > 1, "You must withdraw all LP token from Farming first");
 
 
         _clearApproval(tokenId);
@@ -332,8 +331,8 @@ contract ERC721 is Context, ERC165, IERC721 {
 
         _tokenOwner[tokenId] = to;
 
-        numWarriorInClan[lpPair][from] = numWarriorInClan[lpPair][from].sub(1);
-        numWarriorInClan[lpPair][to] += 1;
+        numWarriorInClan[from][plannet] = numWarriorInClan[from][plannet].sub(1);
+        numWarriorInClan[to][plannet] += 1;
 
         emit Transfer(from, to, tokenId);
     }

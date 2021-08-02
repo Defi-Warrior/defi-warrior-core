@@ -9,10 +9,17 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
 
     address public router;
     address public gemFactory;
-    uint32 rangeTribe = 10;
+
+    uint256 maxTribe = 10;
+    
+    mapping(uint => bool) validPlannet;
 
     constructor (string memory name, string memory symbol) public ERC721Metadata(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
+        // genesis plannets
+        validPlannet[0] = true;
+        validPlannet[1] = true;
+        validPlannet[2] = true;
     }
 
     function setRouter(address _router) external onlyOwner {
@@ -23,42 +30,49 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         gemFactory = _gemFactory;
     }
 
-    function setRangeTribe(uint32 _value) external onlyOwner {
-        rangeTribe = _value;
+    function setMaxTribe(uint256 _maxTribe) external onlyOwner {
+        maxTribe = _maxTribe;
     }
 
-    function mint(address tokenOwner, address origin) external returns (uint256) {
+    function updatePlannet(uint256 _plannetIdx, bool _allowed) external onlyOwner {
+        validPlannet[_plannetIdx] = _allowed;
+    }
+
+    function mint(address tokenOwner, uint256 plannet) external returns (uint256) {
         require(msg.sender == router, "Defi Warrior: Forbidden");
+        require(validPlannet[plannet], "Invalid plannet value");
 
         uint256 tokenId = totalSupply();
 
         _safeMint(tokenOwner, tokenId);
 
-        numWarriorInClan[origin][tokenOwner] += 1;
+        numWarriorInClan[tokenOwner][plannet] += 1;
 
         uint32 random = uint32(block.timestamp % 2**32);
 
         attributes.push(Attribute({
-            singleMatch: 0,
-            tournamentMatch: 0,
-            origin: origin,
-            tribe: random % rangeTribe,
-            critRate: random % 100,
+            plannet: plannet,
+            tribe: random % maxTribe,
+            health: 100 + random % 50,
+            critRate: 50 + random % 25,
             skill: random % 51 + random % 99,
-            attack: random % 74 + random % 76
+            attack: random % 74 + random % 76,
+            bodyParts: uint256(keccak256(abi.encodePacked(block.timestamp)))
         }));
 
         return tokenId;
     }
 
-    function startFarming(address user, address lpToken) external {
+    function startFarming(address user, uint256 plannet) external {
         require(msg.sender == gemFactory, "Sender must be GemFactory");
-        isFarming[user][lpToken] = true;
+        require(validPlannet[plannet], "Invalid Plannet");
+        isFarming[user][plannet] = true;
     }
 
-    function stopFarming(address user, address lpToken) external {
+    function stopFarming(address user, uint256 plannet) external {
         require(msg.sender == gemFactory, "Sender must be GemFactory");
-        isFarming[user][lpToken] = false;
+        require(validPlannet[plannet], "Invalid Plannet");
+        isFarming[user][plannet] = false;
     }
 
     function tokensOfOwner(address _owner) external view returns (uint[] memory) {
@@ -77,9 +91,5 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
     function burn(uint256 tokenId) external {
       require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721Burnable: caller is not owner nor approved");
         _burn(tokenId);
-    }
-
-    function originOf(uint256 tokenId) external view returns (address origin) {
-        return attributes[tokenId].origin;
     }
 }
