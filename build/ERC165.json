@@ -34,12 +34,6 @@
       "object": "",
       "opcodes": "",
       "sourceMap": ""
-    },
-    "deployedBytecode": {
-      "linkReferences": {},
-      "object": "",
-      "opcodes": "",
-      "sourceMap": ""
     }
   },
   "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Implementation of the {IERC165} interface.  * Contracts may inherit from this and call {_registerInterface} to declare their support of an interface.\",\"methods\":{\"supportsInterface(bytes4)\":{\"details\":\"See {IERC165-supportsInterface}.      * Time complexity O(1), guaranteed to always use less than 30 000 gas.\"}}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"contracts/libraries/ERC165.sol\":\"ERC165\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":999999},\"remappings\":[]},\"sources\":{\"contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0x84f9de8008f3c333e320fa8eac048f6f59780ead789d47be58b60be6ef5b49fe\",\"urls\":[\"bzz-raw://8ac42de7293bb11d7d64c199478e1bfa762f425226a973319da6159ba407b34c\",\"dweb:/ipfs/QmPGVG3PSHAXsJoW9rJZGo1bMUK8yS3HqxZGGXkCQ4d6nZ\"]},\"contracts/libraries/ERC165.sol\":{\"keccak256\":\"0x1482f0a5b07700497a3a07e0af4a3e9c56be798fccb9df44862dbbffc0be3ad9\",\"urls\":[\"bzz-raw://de31e93ad96f2169b081dbd00f9464e1bcde72dabd84c2d9c769a5b98da983e3\",\"dweb:/ipfs/QmVAHe8m5XBJGMxxDo7mJdTA1tm6Sst6NAFnuMcUFFUx8H\"]}},\"version\":1}",

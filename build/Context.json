@@ -13,12 +13,6 @@
       "object": "",
       "opcodes": "",
       "sourceMap": ""
-    },
-    "deployedBytecode": {
-      "linkReferences": {},
-      "object": "",
-      "opcodes": "",
-      "sourceMap": ""
     }
   },
   "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"contracts/libraries/Context.sol\":\"Context\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":999999},\"remappings\":[]},\"sources\":{\"contracts/libraries/Context.sol\":{\"keccak256\":\"0x98d9c3f119eabc9384b14d85702d9a1249760fc32ae8cb295f1071a064c6733a\",\"urls\":[\"bzz-raw://a3405e6d7e177d0ef81858e81dea76264c9b71a8dda1efe3911df79f45fbb848\",\"dweb:/ipfs/Qmf69RTdxy32UXNJPFQz8M8C6Shhf1i6B1NiYWzDA8FUnS\"]}},\"version\":1}",
