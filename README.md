@@ -22,3 +22,22 @@ The following assumes the use of `node@>=10`.
 ## Run Tests
 
 `yarn test`
+
+
+# BUILD LIB FOR JAVA
+
+## Install library
+
+- Install solc
+- Install web3j
+
+## Version solidity complie
+Version solidity: 0.5.16
+
+## Compile sol to java lib
+
+Compile file sol to abi and bin file
+`solc contracts/DefiWarrior.sol --bin --abi -o compile`
+
+Compile to java lib from abi and bin file
+`web3j generate solidity -a ./bin/contracts/DefiWarrior.abi -b ./bin/contracts/DefiWarrior.bin -o java -p bap.jp`
