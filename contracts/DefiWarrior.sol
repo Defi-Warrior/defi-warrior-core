@@ -12,7 +12,7 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
     address public router;
     address public gemFactory;
 
-    uint256 maxTribe = 10;
+    uint256 maxTribe = 5;
     
     mapping(uint => bool) validPlannet;
 
@@ -57,9 +57,9 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
             tribe: random % maxTribe,
             health: 100 + random % 50,
             critRate: 50 + random % 25,
+            critMultiplier: 150 + random % 50,
             skill: random % 51 + random % 99,
-            attack: random % 74 + random % 76,
-            bodyParts: uint256(keccak256(abi.encodePacked(block.timestamp)))
+            attack: random % 74 + random % 76
         }));
 
         return tokenId;

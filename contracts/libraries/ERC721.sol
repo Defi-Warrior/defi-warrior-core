@@ -22,10 +22,9 @@ contract ERC721 is Context, ERC165, IERC721 {
         uint256 tribe; // fire, water, dark...
         uint256 health;
         uint256 critRate;
+        uint256 critMultiplier; 
         uint256 skill; // damage when warrior use skill
         uint256 attack; // base damamge when warrior attack
-        uint256 bodyParts; // each 16 bits from left to right in this number represent a body part of the warrior
-        // the last 32 bits are reserved for evolution or some other stuff that we dont even fucking know yet
     }
     // Equals to `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`
     // which can be also obtained as `IERC721Receiver(0).onERC721Received.selector`
@@ -93,6 +92,14 @@ contract ERC721 is Context, ERC165, IERC721 {
         require(owner != address(0), "ERC721: owner query for nonexistent token");
 
         return owner;
+    }
+
+    function ownersOf(uint256[] memory ids) public view returns (address[] memory) {
+        address[] memory addrs = new address[](ids.length);
+        for(uint i = 0; i < ids.length; i++) {
+            addrs[i] = _tokenOwner[ids[i]];
+        }
+        return addrs;
     }
 
     /**
