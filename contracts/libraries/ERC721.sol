@@ -51,7 +51,7 @@ contract ERC721 is Context, ERC165, IERC721 {
     // 11: Skill 5
     // 12: body part 1
     // 13...26: body part 2 -> body part 14
-    // 27->100: reserved fields
+    // 27->50: reserved fields
 
     // Mapping from token ID to owner
     mapping (uint256 => address) private _tokenOwner;
