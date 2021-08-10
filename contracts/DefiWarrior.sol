@@ -1,6 +1,4 @@
 pragma solidity >=0.5.16;
-pragma experimental ABIEncoderV2;
-
 
 import './libraries/ERC721.sol';
 import './libraries/ERC721Enumerable.sol';
@@ -52,15 +50,21 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
 
         uint32 random = uint32(block.timestamp % 2**32);
 
-        attributes.push(Attribute({
-            plannet: plannet,
-            tribe: random % maxTribe,
-            health: 100 + random % 50,
-            critRate: 50 + random % 25,
-            critMultiplier: 150 + random % 50,
-            skill: random % 51 + random % 99,
-            attack: random % 74 + random % 76
-        }));
+        uint256[50] memory att;
+        att[0] = plannet;
+        att[1] = random % maxTribe;
+        // health
+        att[2] = 50 + random % 50;
+        // crit rate
+        att[3] = 50 + random % 25;
+        // crit multiplier
+        att[4] =  random % 75 + random % 25;
+        // skill damage
+        att[5] = 60 + random % 40;
+        // base attack damage
+        att[6] = 70 + random % 30;
+
+        attributes[tokenId] = att;
 
         return tokenId;
     }
@@ -95,11 +99,15 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         _burn(tokenId);
     }
 
-    function getWarriors(uint256[] calldata ids) external view returns(Attribute[] memory) {
-        Attribute[] memory atts = new Attribute[](ids.length);
+    function getWarriors(uint256[] calldata ids) external view returns(uint256[50][] memory) {
+        uint256[50][] memory atts = new uint256[50][](ids.length);
         for(uint i = 0; i < ids.length; i++) {
             atts[i] = attributes[ids[i]];
         }
         return atts;
+    }
+
+    function getWarriorAt(uint256 index) external view returns(uint256[50] memory) {
+        return attributes[index];
     }
 }

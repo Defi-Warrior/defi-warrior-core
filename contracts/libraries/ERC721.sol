@@ -35,8 +35,23 @@ contract ERC721 is Context, ERC165, IERC721 {
 
     // mapping to check which plannet user is farming
     mapping(address => mapping(uint256 => bool)) isFarming;
-
-    Attribute[] public attributes;
+    // mapping from tokenId to atrtibutes
+    mapping(uint256 => uint256[50]) attributes;
+    // 0: plannet
+    // 1: tribe
+    // 2: health
+    // 3: critRate
+    // 4: critMultiplier
+    // 5: skillDamage
+    // 6: attack
+    // 7: default Skill
+    // 8: Skill 2
+    // 9: Skill 3
+    // 10: Skill 4
+    // 11: Skill 5
+    // 12: body part 1
+    // 13...26: body part 2 -> body part 14
+    // 27->100: reserved fields
 
     // Mapping from token ID to owner
     mapping (uint256 => address) private _tokenOwner;
@@ -327,9 +342,8 @@ contract ERC721 is Context, ERC165, IERC721 {
     function _transferFrom(address from, address to, uint256 tokenId) internal {
         require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
         require(to != address(0), "ERC721: transfer to the zero address");
-        uint256 plannet = attributes[tokenId].plannet;
+        uint256 plannet = attributes[tokenId][0];
         require(!isFarming[from][plannet] || numWarriorInClan[from][plannet] > 1, "You must withdraw all LP token from Farming first");
-
 
         _clearApproval(tokenId);
 
