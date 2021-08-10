@@ -17,15 +17,6 @@ contract ERC721 is Context, ERC165, IERC721 {
     using Address for address;
     using Counters for Counters.Counter;
 
-    struct Attribute {
-        uint256 plannet; // btc, eth, solana, polkadot...
-        uint256 tribe; // fire, water, dark...
-        uint256 health;
-        uint256 critRate;
-        uint256 critMultiplier; 
-        uint256 skill; // damage when warrior use skill
-        uint256 attack; // base damamge when warrior attack
-    }
     // Equals to `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`
     // which can be also obtained as `IERC721Receiver(0).onERC721Received.selector`
     bytes4 private constant _ERC721_RECEIVED = 0x150b7a02;
@@ -36,7 +27,7 @@ contract ERC721 is Context, ERC165, IERC721 {
     // mapping to check which plannet user is farming
     mapping(address => mapping(uint256 => bool)) isFarming;
     // mapping from tokenId to atrtibutes
-    mapping(uint256 => uint256[50]) attributes;
+    mapping(uint256 => uint256[50]) public attributes;
     // 0: plannet
     // 1: tribe
     // 2: health
