@@ -1,5 +1,5 @@
 node_modules/
-build/
+build/Combined-Json.json
 .idea/
 bin/
 contracts/artifacts

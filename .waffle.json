@@ -7,8 +7,7 @@
         "*": [
           "evm.bytecode.object",
           "evm.deployedBytecode.object",
-          "abi",
-          "metadata"
+          "abi"
         ],
         "": ["ast"]
       }
