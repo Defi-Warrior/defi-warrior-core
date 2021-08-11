@@ -13,7 +13,7 @@ import "./Warrior.sol";
  * @title ERC721 Non-Fungible Token Standard basic implementation
  * @dev see https://eips.ethereum.org/EIPS/eip-721
  */
-contract ERC721 is Warrior, Context, ERC165, IERC721 {
+contract ERC721 is Context, ERC165, IERC721 {
     using SafeMath for uint256;
     using Address for address;
     using Counters for Counters.Counter;
@@ -311,8 +311,6 @@ contract ERC721 is Warrior, Context, ERC165, IERC721 {
     function _transferFrom(address from, address to, uint256 tokenId) internal {
         require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
         require(to != address(0), "ERC721: transfer to the zero address");
-        uint256 plannet = attributes[tokenId][0];
-        require(!isFarming[from][plannet] || numWarriorInPlannet[from][plannet] > 1, "You must withdraw all LP token from Farming first");
 
         _clearApproval(tokenId);
 
@@ -320,9 +318,6 @@ contract ERC721 is Warrior, Context, ERC165, IERC721 {
         _ownedTokensCount[to].increment();
 
         _tokenOwner[tokenId] = to;
-
-        numWarriorInPlannet[from][plannet] = numWarriorInPlannet[from][plannet].sub(1);
-        numWarriorInPlannet[to][plannet] += 1;
 
         emit Transfer(from, to, tokenId);
     }

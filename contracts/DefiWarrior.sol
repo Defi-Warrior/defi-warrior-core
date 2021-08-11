@@ -6,7 +6,7 @@ import './libraries/ERC721Enumerable.sol';
 import './libraries/ERC721Metadata.sol';
 import './libraries/Ownable.sol';
 
-contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
+contract DefiWarrior is Warrior, ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
 
     // token that user need to pay
     address public currency;
@@ -67,6 +67,7 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
 
         uint256[25] memory att;
         att[0] = plannet;
+        // tribute
         att[1] = random % 5;
         // health
         att[2] = 50 + random % 50;
@@ -82,6 +83,26 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         attributes[tokenId] = att;
 
         return tokenId;
+    }
+
+    function safeTransferFrom(address from, address to, uint256 tokenId) public {
+        uint256 plannet = attributes[tokenId][0];
+        require(!isFarming[from][plannet] || numWarriorInPlannet[from][plannet] > 1, "You must withdraw all LP token from Farming first");
+
+        ERC721.safeTransferFrom(from, to, tokenId, "");
+
+        numWarriorInPlannet[from][plannet] = numWarriorInPlannet[from][plannet] - 1;
+        numWarriorInPlannet[to][plannet] += 1;
+    }
+
+    function transferFrom(address from, address to, uint256 tokenId) public {
+        uint256 plannet = attributes[tokenId][0];
+        require(!isFarming[from][plannet] || numWarriorInPlannet[from][plannet] > 1, "You must withdraw all LP token from Farming first");
+
+        ERC721.transferFrom(from, to, tokenId);
+
+        numWarriorInPlannet[from][plannet] = numWarriorInPlannet[from][plannet] - 1;
+        numWarriorInPlannet[to][plannet] += 1;
     }
 
     function tokensOfOwner(address _owner) external view returns (uint[] memory) {

@@ -34,8 +34,10 @@ describe('DefiWarriorPair', () => {
 
   it('mint warrior', async () => {
     await nftWarrior.mint(wallet.address, 0)
-    let att = await nftWarrior.getWarriorAt(0)
-    console.log(att)
+    await nftWarrior.mint(other.address, 1)
+    await nftWarrior.transferFrom(wallet.address, other.address, 0)
+    console.log(await nftWarrior.numWarriorInPlannet(wallet.address, 0))
+    console.log(await nftWarrior.numWarriorInPlannet(other.address, 0))
   })
 
 })
