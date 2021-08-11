@@ -45,7 +45,6 @@
       "sourceMap": ""
     }
   },
-  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount0\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount1\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"uniswapV2Call\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"contracts/interfaces/IDefiWarriorCallee.sol\":\"IDefiWarriorCallee\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":999999},\"remappings\":[]},\"sources\":{\"contracts/interfaces/IDefiWarriorCallee.sol\":{\"keccak256\":\"0x71a47f28ae2a3c082b21cecb39f6acb343d20505c9a9621f0e0537cb9498e85f\",\"urls\":[\"bzz-raw://48af868237ce39a458f9e68a339623d80289cb18820fded68ba09fa1a6a74d01\",\"dweb:/ipfs/QmbfH6jscJmXCZ6gEe3ytHdBXaaujUxDM1qq2du61CVtfs\"]}},\"version\":1}",
   "interface": [
     {
       "constant": false,
