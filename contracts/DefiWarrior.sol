@@ -1,5 +1,6 @@
 pragma solidity >=0.5.16;
 
+import './interfaces/IERC20.sol';
 import './libraries/ERC721.sol';
 import './libraries/ERC721Enumerable.sol';
 import './libraries/ERC721Metadata.sol';
@@ -7,12 +8,17 @@ import './libraries/Ownable.sol';
 
 contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
 
-    address public router;
-    address public gemFactory;
+    // token that user need to pay
+    address public currency;
 
-    uint256 maxTribe = 5;
-    
-    mapping(uint => bool) validPlannet;
+    // amount of currency user need to pay to mint new warrior
+    uint256 public WARRIOR_PRICE = 1000000000000000000;
+
+    // num warrior that is allowed to buy from admin
+    uint256 constant public NUM_GENESIS_WARRIOR = 1000;
+
+    // list of addresses that are able to mint new character
+    mapping(address => bool) miners;
 
     constructor (string memory name, string memory symbol) public ERC721Metadata(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
@@ -22,16 +28,20 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         validPlannet[2] = true;
     }
 
-    function setRouter(address _router) external onlyOwner {
-        router = _router;
+    function setWarriorPrice(uint _price) external onlyOwner {
+        WARRIOR_PRICE = _price;
+    }
+
+    function setCurrency(address _currency) external onlyOwner {
+        currency = _currency;
+    }
+
+    function updateMiner(address _miner, bool _allowed) external onlyOwner {
+        miners[_miner] = _allowed;
     }
 
     function setGemFactory(address _gemFactory) external onlyOwner {
         gemFactory = _gemFactory;
-    }
-
-    function setMaxTribe(uint256 _maxTribe) external onlyOwner {
-        maxTribe = _maxTribe;
     }
 
     function updatePlannet(uint256 _plannetIdx, bool _allowed) external onlyOwner {
@@ -39,20 +49,25 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
     }
 
     function mint(address tokenOwner, uint256 plannet) external returns (uint256) {
-        require(msg.sender == router, "Defi Warrior: Forbidden");
         require(validPlannet[plannet], "Invalid plannet value");
 
         uint256 tokenId = totalSupply();
 
+        if (tokenId >= NUM_GENESIS_WARRIOR) {
+            require(miners[msg.sender], "Caller is not miner");
+        }
+
+        IERC20(currency).transferFrom(msg.sender, owner(), WARRIOR_PRICE);
+
         _safeMint(tokenOwner, tokenId);
 
-        numWarriorInClan[tokenOwner][plannet] += 1;
+        numWarriorInPlannet[tokenOwner][plannet] += 1;
 
         uint32 random = uint32(block.timestamp % 2**32);
 
-        uint256[50] memory att;
+        uint256[25] memory att;
         att[0] = plannet;
-        att[1] = random % maxTribe;
+        att[1] = random % 5;
         // health
         att[2] = 50 + random % 50;
         // crit rate
@@ -67,18 +82,6 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         attributes[tokenId] = att;
 
         return tokenId;
-    }
-
-    function startFarming(address user, uint256 plannet) external {
-        require(msg.sender == gemFactory, "Sender must be GemFactory");
-        require(validPlannet[plannet], "Invalid Plannet");
-        isFarming[user][plannet] = true;
-    }
-
-    function stopFarming(address user, uint256 plannet) external {
-        require(msg.sender == gemFactory, "Sender must be GemFactory");
-        require(validPlannet[plannet], "Invalid Plannet");
-        isFarming[user][plannet] = false;
     }
 
     function tokensOfOwner(address _owner) external view returns (uint[] memory) {
@@ -97,17 +100,5 @@ contract DefiWarrior is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
     function burn(uint256 tokenId) external {
       require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721Burnable: caller is not owner nor approved");
         _burn(tokenId);
-    }
-
-    function getWarriors(uint256[] calldata ids) external view returns(uint256[50][] memory) {
-        uint256[50][] memory atts = new uint256[50][](ids.length);
-        for(uint i = 0; i < ids.length; i++) {
-            atts[i] = attributes[ids[i]];
-        }
-        return atts;
-    }
-
-    function getWarriorAt(uint256 index) external view returns(uint256[50] memory) {
-        return attributes[index];
     }
 }

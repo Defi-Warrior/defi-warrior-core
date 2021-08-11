@@ -7,12 +7,13 @@ import "./SafeMath.sol";
 import "./Address.sol";
 import "./Counters.sol";
 import "./ERC165.sol";
+import "./Warrior.sol";
 
 /**
  * @title ERC721 Non-Fungible Token Standard basic implementation
  * @dev see https://eips.ethereum.org/EIPS/eip-721
  */
-contract ERC721 is Context, ERC165, IERC721 {
+contract ERC721 is Warrior, Context, ERC165, IERC721 {
     using SafeMath for uint256;
     using Address for address;
     using Counters for Counters.Counter;
@@ -20,29 +21,6 @@ contract ERC721 is Context, ERC165, IERC721 {
     // Equals to `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`
     // which can be also obtained as `IERC721Receiver(0).onERC721Received.selector`
     bytes4 private constant _ERC721_RECEIVED = 0x150b7a02;
-
-    // mapping from user address => number of warrior origin from that lp token
-    mapping(address => mapping(uint256 => uint256)) public numWarriorInClan;
-
-    // mapping to check which plannet user is farming
-    mapping(address => mapping(uint256 => bool)) isFarming;
-    // mapping from tokenId to atrtibutes
-    mapping(uint256 => uint256[50]) public attributes;
-    // 0: plannet
-    // 1: tribe
-    // 2: health
-    // 3: critRate
-    // 4: critMultiplier
-    // 5: skillDamage
-    // 6: attack
-    // 7: default Skill
-    // 8: Skill 2
-    // 9: Skill 3
-    // 10: Skill 4
-    // 11: Skill 5
-    // 12: body part 1
-    // 13...26: body part 2 -> body part 14
-    // 27->50: reserved fields
 
     // Mapping from token ID to owner
     mapping (uint256 => address) private _tokenOwner;
@@ -334,7 +312,7 @@ contract ERC721 is Context, ERC165, IERC721 {
         require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
         require(to != address(0), "ERC721: transfer to the zero address");
         uint256 plannet = attributes[tokenId][0];
-        require(!isFarming[from][plannet] || numWarriorInClan[from][plannet] > 1, "You must withdraw all LP token from Farming first");
+        require(!isFarming[from][plannet] || numWarriorInPlannet[from][plannet] > 1, "You must withdraw all LP token from Farming first");
 
         _clearApproval(tokenId);
 
@@ -343,8 +321,8 @@ contract ERC721 is Context, ERC165, IERC721 {
 
         _tokenOwner[tokenId] = to;
 
-        numWarriorInClan[from][plannet] = numWarriorInClan[from][plannet].sub(1);
-        numWarriorInClan[to][plannet] += 1;
+        numWarriorInPlannet[from][plannet] = numWarriorInPlannet[from][plannet].sub(1);
+        numWarriorInPlannet[to][plannet] += 1;
 
         emit Transfer(from, to, tokenId);
     }
