@@ -68,5 +68,9 @@ export async function nftFixture(provider: Web3Provider, [wallet, other]: Wallet
   await token0.transfer(other.address, expandTo18Decimals(100))
   await token1.transfer(other.address, expandTo18Decimals(100))
 
+  await nftWarrior.updateMiner(wallet.address, true)
+  await nftWarrior.setCurrency(token0.address);
+  await token0.approve(nftWarrior.address, expandTo18Decimals(1000000))
+
   return { factory, token0, token1, pair, nftWarrior }
 }
