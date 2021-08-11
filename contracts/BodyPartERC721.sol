@@ -65,4 +65,17 @@ contract BodyPart is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         return atts;
     }
 
+    function tokensOfOwner(address _owner) external view returns (uint[] memory) {
+        uint tokenCount = balanceOf(_owner);
+        if (tokenCount == 0) {
+            return new uint[](0); // Return an empty array
+        } else {
+            uint[] memory result = new uint[](tokenCount);
+            for (uint index = 0; index < tokenCount; index++) {
+                result[index] = tokenOfOwnerByIndex(_owner, index);
+            }
+            return result;
+        }
+    }
+
 }

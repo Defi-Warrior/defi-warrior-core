@@ -117,9 +117,4 @@ contract DefiWarrior is Warrior, ERC721, ERC721Enumerable, ERC721Metadata, Ownab
             return result;
         }
     }
-
-    function burn(uint256 tokenId) external {
-      require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721Burnable: caller is not owner nor approved");
-        _burn(tokenId);
-    }
 }
