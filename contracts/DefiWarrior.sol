@@ -20,12 +20,17 @@ contract DefiWarrior is Warrior, ERC721, ERC721Enumerable, ERC721Metadata, Ownab
     // list of addresses that are able to mint new character
     mapping(address => bool) miners;
 
-    constructor (string memory name, string memory symbol) public ERC721Metadata(name, symbol) {
+        constructor (string memory name, 
+                     string memory symbol, 
+                     address _currency, 
+                     address _gemFactory) public ERC721Metadata(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
         // genesis plannets
         validPlannet[0] = true;
         validPlannet[1] = true;
         validPlannet[2] = true;
+        currency = _currency;
+        gemFactory = _gemFactory;
     }
 
     function setWarriorPrice(uint _price) external onlyOwner {

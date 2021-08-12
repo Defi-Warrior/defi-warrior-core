@@ -5,8 +5,6 @@ contract Warrior {
     // an instance of this contract, which should be used via inheritance.
     constructor () internal { }
 
-    uint256 public level;
-
     // only this address able to call farming related functions
     address public gemFactory;
 
