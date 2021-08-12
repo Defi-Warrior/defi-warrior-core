@@ -14,7 +14,7 @@ contract DefiWarrior is Warrior, ERC721, ERC721Enumerable, ERC721Metadata, Ownab
     // amount of currency user need to pay to mint new warrior
     uint256 public WARRIOR_PRICE = 1000000000000000000;
 
-    // num warrior that is allowed to buy from admin
+    // num warrior that is allowed to buy using FIWA token
     uint256 constant public NUM_GENESIS_WARRIOR = 1000;
 
     // list of addresses that are able to mint new character
@@ -25,7 +25,7 @@ contract DefiWarrior is Warrior, ERC721, ERC721Enumerable, ERC721Metadata, Ownab
                      address _currency, 
                      address _gemFactory) public ERC721Metadata(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
-        // genesis plannets
+        // genesis plannets: 0 = BTC, 1 = ETH, 2 = RIPPLE
         validPlannet[0] = true;
         validPlannet[1] = true;
         validPlannet[2] = true;
@@ -49,10 +49,12 @@ contract DefiWarrior is Warrior, ERC721, ERC721Enumerable, ERC721Metadata, Ownab
         gemFactory = _gemFactory;
     }
 
-    function updatePlannet(uint256 _plannetIdx, bool _allowed) external onlyOwner {
-        validPlannet[_plannetIdx] = _allowed;
+    // add more plannet to the pool
+    function addPlannet(uint256 _plannetIdx) external onlyOwner {
+        validPlannet[_plannetIdx] = true;
     }
 
+    // mint a warrior that is belong to a specific plannet, the rest attribute are random
     function mint(address tokenOwner, uint256 plannet) external returns (uint256) {
         require(validPlannet[plannet], "Invalid plannet value");
 
@@ -86,6 +88,23 @@ contract DefiWarrior is Warrior, ERC721, ERC721Enumerable, ERC721Metadata, Ownab
         att[6] = 70 + random % 30;
 
         attributes[tokenId] = att;
+
+        return tokenId;
+    }
+
+    // a more convinient function to mint a warrior with deterministic attibutes
+    function mint(address tokenOwner, uint256[25] calldata _attribute) external returns (uint256) {
+        uint plannet = _attribute[0];
+        require(miners[msg.sender], "Caller is not miner");
+        require(validPlannet[plannet], "Invalid plannet value");
+
+        uint256 tokenId = totalSupply();
+
+        _safeMint(tokenOwner, tokenId);
+
+        numWarriorInPlannet[tokenOwner][plannet] += 1;
+
+        attributes[tokenId] = _attribute;
 
         return tokenId;
     }

@@ -30,8 +30,10 @@ contract BodyPart is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
     mapping(uint => uint[10]) attributes;
     // 0 = type
     // 1 = rarity
-    // 2 = skillId
-    // 3 - 9: reseverd
+    // 2 = skill_1
+    // 3 = skill_2
+    // 4 = skill_3
+    // 5 - 9: reseverd
 
     constructor (string memory name, string memory symbol) public ERC721Metadata(name, symbol) {}
 
@@ -53,6 +55,14 @@ contract BodyPart is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         attributes[tokenId] = att;
     }
 
+    // special mint function, used by admin to create bodypart with pre-defined attributes
+    function mint(address _to, uint256[10] calldata _attribute) external {
+        require(miners[msg.sender], "caller is not miner");
+        uint256 tokenId = totalSupply();
+        _safeMint(_to, tokenId);
+        attributes[tokenId] = _attribute;
+    }
+
     function getBodyAttribute(uint tokenId) external view returns(uint[10] memory) {
         return attributes[tokenId];
     }
@@ -64,7 +74,7 @@ contract BodyPart is ERC721, ERC721Enumerable, ERC721Metadata, Ownable {
         }
         return atts;
     }
-
+    // get all tokenIds belong to an owner
     function tokensOfOwner(address _owner) external view returns (uint[] memory) {
         uint tokenCount = balanceOf(_owner);
         if (tokenCount == 0) {
