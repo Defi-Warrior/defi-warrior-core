@@ -25,10 +25,9 @@ contract DefiWarrior is Warrior, ERC721, ERC721Enumerable, ERC721Metadata, Ownab
                      address _currency, 
                      address _gemFactory) public ERC721Metadata(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
-        // genesis plannets: 0 = BTC, 1 = ETH, 2 = RIPPLE
+        // genesis plannets: 0 = BTC, 1 = ETH
         validPlannet[0] = true;
         validPlannet[1] = true;
-        validPlannet[2] = true;
         currency = _currency;
         gemFactory = _gemFactory;
     }
@@ -74,18 +73,20 @@ contract DefiWarrior is Warrior, ERC721, ERC721Enumerable, ERC721Metadata, Ownab
 
         uint256[25] memory att;
         att[0] = plannet;
-        // tribute
-        att[1] = random % 5;
+        // class
+        att[1] = random % 10;
+        // level
+        att[2] = 1;
         // health
-        att[2] = 50 + random % 50;
-        // crit rate
         att[3] = 50 + random % 25;
-        // crit multiplier
+        // defense
         att[4] =  random % 75 + random % 25;
-        // skill damage
+        // power
         att[5] = 60 + random % 40;
-        // base attack damage
+        // crit rate
         att[6] = 70 + random % 30;
+         // crit damage
+        att[7] = 25 + random % 31;
 
         attributes[tokenId] = att;
 
