@@ -54,7 +54,7 @@ contract DefiWarrior is Warrior, ERC721, ERC721Enumerable, ERC721Metadata, Ownab
     }
 
     // mint a warrior that is belong to a specific plannet, the rest attribute are random
-    function mint(address tokenOwner, uint256 plannet) external returns (uint256) {
+    function mintByUser(address tokenOwner, uint256 plannet) external returns (uint256) {
         require(validPlannet[plannet], "Invalid plannet value");
 
         uint256 tokenId = totalSupply();
