@@ -24,6 +24,7 @@ contract DefiWarriorFactory is IDefiWarriorFactory {
 
     constructor(address _admin) public {
         admin = _admin;
+        feeTo = _admin;
     }
 
     function allPairsLength() external view returns (uint) {
