@@ -20,6 +20,7 @@
     "node": ">=10"
   },
   "devDependencies": {
+    "@truffle/hdwallet-provider": "1.6.0",
     "@types/chai": "^4.2.6",
     "@types/mocha": "^5.2.7",
     "chai": "^4.2.0",
@@ -27,7 +28,7 @@
     "ethereumjs-util": "^6.2.0",
     "mocha": "^6.2.2",
     "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
+    "rimraf": "^3.0.2",
     "solc": "0.5.16",
     "ts-node": "^8.5.4",
     "typescript": "^3.7.3"

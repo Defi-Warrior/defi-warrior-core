@@ -1,4 +1,4 @@
-const HDWalletProvider = require("@truffle/hdwallet-provider");
+const HDWalletProvider = require('@truffle/hdwallet-provider')
 /**
  * Use this file to configure your truffle project. It's seeded with some
  * common settings for different networks and features like migrations,
@@ -38,23 +38,23 @@ module.exports = {
 
   networks: {
     bsctest: {
-      provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, 'https://data-seed-prebsc-1-s1.binance.org:8545/'),
-        network_id: 97,       // Ropsten's id
-        gas: 5500000,        // Ropsten has a lower block limit than mainnet
-        confirmations: 0,    // # of confs to wait between deployments. (default: 0)
-        timeoutBlocks: 50,  // # of blocks before a deployment times out  (minimum/default: 50)
-        gasPrice: 10000000000,
-        skipDryRun: false     // Skip dry run before migrations? (default: false for public nets )
-      },
-    mainnet: {
-    provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, 'https://bsc-dataseed1.ninicoin.io'),
-      network_id: 56,       // Ropsten's id
-      gas: 5500000,        // Ropsten has a lower block limit than mainnet
-      confirmations: 0,    // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 50,  // # of blocks before a deployment times out  (minimum/default: 50)
-      gasPrice: 5000000000,
-      skipDryRun: false     // Skip dry run before migrations? (default: false for public nets )
+      provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, 'https://data-seed-prebsc-1-s2.binance.org:8545/'),
+      network_id: 97, // Ropsten's id
+      gas: 5500000, // Ropsten has a lower block limit than mainnet
+      confirmations: 0, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 50, // # of blocks before a deployment times out  (minimum/default: 50)
+      gasPrice: 10000000000,
+      skipDryRun: false // Skip dry run before migrations? (default: false for public nets )
     },
+    mainnet: {
+      provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, 'https://bsc-dataseed1.ninicoin.io'),
+      network_id: 56, // Ropsten's id
+      gas: 5500000, // Ropsten has a lower block limit than mainnet
+      confirmations: 0, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 50, // # of blocks before a deployment times out  (minimum/default: 50)
+      gasPrice: 5000000000,
+      skipDryRun: false // Skip dry run before migrations? (default: false for public nets )
+    }
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
     // You should run a client (like ganache-cli, geth or parity) in a separate terminal
@@ -101,7 +101,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.5.16",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: '0.5.16' // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
@@ -122,4 +122,4 @@ module.exports = {
   db: {
     enabled: false
   }
-};
+}
